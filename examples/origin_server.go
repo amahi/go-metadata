@@ -6,7 +6,7 @@ import (
 )
 
 func main() {
-	data, err := metadata.GetMetadata("Comedy Central Presents - 5x09 - Tom Papa (1).avi","tv")
+	data, err := metadata.GetMetadata("The.Prince.and.the.Pauper.avi","movie")
 	if err != nil {
 		fmt.Println(err)
 	} else {

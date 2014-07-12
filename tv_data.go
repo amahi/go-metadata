@@ -81,6 +81,7 @@ func getTvMetadata(Details tvdbDetails) (tvMetadata, error) {
 		return met, err
 	}
 	met.Banner_Url = gettvdbMirrorPath() + "banners/"
+	met.Media_type = "tv"
 	return met, nil
 }
 func gettvdbMirrorPath() string {

@@ -110,7 +110,7 @@ func searchTmdbTv(MediaName string) (TmdbResponse, error) {
 
 //get configurations
 func getConfig() (TmdbConfig, error) {
-	if config.Change_keys == nil {
+	if config.Images.Base_url == "" {
 		res, err := http.Get("http://api.themoviedb.org/3/configuration?api_key=" + API_KEY)
 		var conf TmdbConfig
 		if err != nil {

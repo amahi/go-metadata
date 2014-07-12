@@ -40,8 +40,7 @@ type TmdbResult struct {
 
 //response of config
 type TmdbConfig struct {
-	Images      ImageConfig
-	Change_keys []string
+	Images ImageConfig
 }
 
 //Image configurtion
@@ -60,10 +59,10 @@ type ImageConfig struct {
 //Movie metadata structure
 type MovieMetadata struct {
 	Id            int
+	Media_type    string
 	Backdrop_path string
 	Poster_path   string
 	Credits       TmdbCredits
-	Media_type    string
 	Config        TmdbConfig
 	Imdb_id       string
 	Overview      string
@@ -112,6 +111,7 @@ type tvdbDetails struct {
 }
 
 type tvMetadata struct {
+	Media_type string
 	SeriesName string `xml:"Series>SeriesName"`
 	Banner_Url string
 	Actors     string `xml:"Series>Actors"`
