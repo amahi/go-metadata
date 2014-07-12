@@ -2,7 +2,7 @@ package main
 
 import (
 	"fmt"
-	"github.com/nileshjagnik/metadata"
+	"github.com/amahi/go-metadata"
 )
 
 func main() {
