@@ -6,10 +6,10 @@ import (
 )
 
 func main() {
-	data, err := metadata.GetMetadata("The.Prince.and.the.Pauper.avi","movie")
+	data, err := metadata.GetMetadata("Marx Brothers - At the Circus (1939).avi","movie")
 	if err != nil {
-		fmt.Println(err)
+		fmt.Println("Error: ",err)
 	} else {
-        	fmt.Println(data)
+        	fmt.Println("Data: \n",data)
 	}
 }

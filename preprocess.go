@@ -8,6 +8,7 @@ package metadata
 
 import (
 	"errors"
+	"strconv"
 	"strings"
 )
 
@@ -22,27 +23,46 @@ func preprocess(MediaName string, Hint string) (title string, mediatype string, 
 			yearparts := strings.Split(s, ")")
 			l := len(yearparts)
 			if l > 1 {
-				result += "%20" + yearparts[l-1]
+				result += " " + yearparts[l-1]
 			} else {
-				result += "%20" + s
+				result += " " + s
 			}
 		}
-		//replace spaces by %20
-		parts = strings.Split(result, " ")
-		result = parts[0]
-		if len(parts) > 1 {
-			for _, s := range parts[1:] {
-				result += "%20" + s
-			}
-		}
+
 		//strip off the extension and full-stops
 		parts = strings.Split(result, ".")
 		if len(parts) > 1 {
 			result = parts[0]
 			for _, s := range parts[1 : len(parts)-1] {
-				result += "%20" + s
+				result += " " + s
 			}
 		}
+
+		//replace spaces by %20
+		parts = strings.Split(result, " ")
+		result = parts[0]
+		a, err := strconv.Atoi(parts[0])
+		if err == nil {
+			//remove year
+			if a > 999 && a < 3000 {
+				result = ""
+			}
+
+		}
+		if len(parts) > 1 {
+			for _, s := range parts[1:] {
+				a, err = strconv.Atoi(s)
+				if err == nil {
+					//remove year
+					if a <= 999 || a >= 3000 {
+						result += "%20" + s
+					}
+				} else {
+					result += "%20" + s
+				}
+			}
+		}
+
 		return result, Hint, nil
 	} else if Hint == "tv" {
 		//replace spaces by %20

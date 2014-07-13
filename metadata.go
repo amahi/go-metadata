@@ -25,14 +25,14 @@ func GetMetadata(MediaName string, Hint string) (json string, err error) {
 			return "", err
 		}
 		add_to_cache(MediaName, met)
-		return met, err
+		return met, nil
 	} else if mediatype == "movie" {
 		met, err := getMovieData(processed_string)
 		if err != nil {
 			return "", err
 		}
 		add_to_cache(MediaName, met)
-		return met, err
+		return met, nil
 	}
 	return met, err
 }
