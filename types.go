@@ -10,9 +10,15 @@ import (
 	"encoding/xml"
 )
 
-const API_KEY string = "dc10d9b00f8a4a777539655342cbb647"
-const TVRAGE_APIKEY string = "L91ezivwoeU8DymX3Wtc"
-const TVDB_APIKEY string = "89DA7ABD734DD427"
+const tmdb_apikey string = "dc10d9b00f8a4a777539655342cbb647"
+const tvrage_apikey string = "L91ezivwoeU8DymX3Wtc"
+const tvdb_apikey string = "89DA7ABD734DD427"
+
+type Library struct {
+	max_size     int
+	current_size int
+	dbpath       string
+}
 
 //response of search/multi
 type TmdbResponse struct {
@@ -121,4 +127,11 @@ type tvMetadata struct {
 	Poster     string `xml:"Series>poster"`
 	Rating     string `xml:"Series>Rating"`
 	FirstAired string `xml:"Series>FirstAired"`
+}
+
+type filtered_output struct {
+	Media_type   string
+	Title        string
+	Artwork      string
+	Release_date string
 }

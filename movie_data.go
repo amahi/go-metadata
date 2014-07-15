@@ -45,6 +45,7 @@ func getMovieData(MediaName string) (string, error) {
 		}
 		movie_details.Id = results.Results[0].Id
 		movie_details.Media_type = "movie"
+
 		metadata, err := json.Marshal(movie_details)
 		if err != nil {
 			return met, err
@@ -56,7 +57,7 @@ func getMovieData(MediaName string) (string, error) {
 
 //search for TV, persons and Movies with a given name
 func searchTmdbMulti(MediaName string) (TmdbResponse, error) {
-	res, err := http.Get("http://api.themoviedb.org/3/search/multi?api_key=" + API_KEY + "&query=" + MediaName)
+	res, err := http.Get("http://api.themoviedb.org/3/search/multi?api_key=" + tmdb_apikey + "&query=" + MediaName)
 	var resp TmdbResponse
 	if err != nil {
 		return resp, err
@@ -74,7 +75,7 @@ func searchTmdbMulti(MediaName string) (TmdbResponse, error) {
 
 //search for Movies with a given name
 func searchMovie(MediaName string) (TmdbResponse, error) {
-	res, err := http.Get("http://api.themoviedb.org/3/search/movie?api_key=" + API_KEY + "&query=" + MediaName)
+	res, err := http.Get("http://api.themoviedb.org/3/search/movie?api_key=" + tmdb_apikey + "&query=" + MediaName)
 	var resp TmdbResponse
 	if err != nil {
 		return resp, err
@@ -92,7 +93,7 @@ func searchMovie(MediaName string) (TmdbResponse, error) {
 
 //search for Tv Shows with a given name
 func searchTmdbTv(MediaName string) (TmdbResponse, error) {
-	res, err := http.Get("http://api.themoviedb.org/3/search/tv?api_key=" + API_KEY + "&query=" + MediaName)
+	res, err := http.Get("http://api.themoviedb.org/3/search/tv?api_key=" + tmdb_apikey + "&query=" + MediaName)
 	var resp TmdbResponse
 	if err != nil {
 		return resp, err
@@ -111,7 +112,7 @@ func searchTmdbTv(MediaName string) (TmdbResponse, error) {
 //get configurations
 func getConfig() (TmdbConfig, error) {
 	if config.Images.Base_url == "" {
-		res, err := http.Get("http://api.themoviedb.org/3/configuration?api_key=" + API_KEY)
+		res, err := http.Get("http://api.themoviedb.org/3/configuration?api_key=" + tmdb_apikey)
 		var conf TmdbConfig
 		if err != nil {
 			return conf, err
@@ -133,7 +134,7 @@ func getConfig() (TmdbConfig, error) {
 
 //get basic information for movie
 func getMovieDetails(MediaId string) (MovieMetadata, error) {
-	res, err := http.Get("http://api.themoviedb.org/3/movie/" + MediaId + "?api_key=" + API_KEY)
+	res, err := http.Get("http://api.themoviedb.org/3/movie/" + MediaId + "?api_key=" + tmdb_apikey)
 	var met MovieMetadata
 	if err != nil {
 		return met, err
@@ -151,7 +152,7 @@ func getMovieDetails(MediaId string) (MovieMetadata, error) {
 
 //get credits for movie
 func getMovieCredits(MediaId string) (TmdbCredits, error) {
-	res, err := http.Get("http://api.themoviedb.org/3/movie/" + MediaId + "/credits?api_key=" + API_KEY)
+	res, err := http.Get("http://api.themoviedb.org/3/movie/" + MediaId + "/credits?api_key=" + tmdb_apikey)
 	var cred TmdbCredits
 	if err != nil {
 		return cred, err
@@ -169,7 +170,7 @@ func getMovieCredits(MediaId string) (TmdbCredits, error) {
 
 //get basic information for Tv
 func getTmdbTvDetails(MediaId string) (MovieMetadata, error) {
-	res, err := http.Get("http://api.themoviedb.org/3/tv/" + MediaId + "?api_key=" + API_KEY)
+	res, err := http.Get("http://api.themoviedb.org/3/tv/" + MediaId + "?api_key=" + tmdb_apikey)
 	var met MovieMetadata
 	if err != nil {
 		return met, err
@@ -187,7 +188,7 @@ func getTmdbTvDetails(MediaId string) (MovieMetadata, error) {
 
 //get credits for Tv
 func getTmdbTvCredits(MediaId string) (TmdbCredits, error) {
-	res, err := http.Get("http://api.themoviedb.org/3/tv/" + MediaId + "/credits?api_key=" + API_KEY)
+	res, err := http.Get("http://api.themoviedb.org/3/tv/" + MediaId + "/credits?api_key=" + tmdb_apikey)
 	var cred TmdbCredits
 	if err != nil {
 		return cred, err
@@ -201,4 +202,24 @@ func getTmdbTvCredits(MediaId string) (TmdbCredits, error) {
 		return TmdbCredits{}, err
 	}
 	return cred, nil
+}
+
+//filter out unwanted movie metadata
+func filterMovieData(data string) (string, error) {
+	var f filtered_output
+	var det MovieMetadata
+	err := json.Unmarshal([]byte(data), &det)
+	if err != nil {
+		return "", err
+	}
+	f.Media_type = det.Media_type
+	f.Title = det.Title
+	f.Release_date = det.Release_date
+	f.Artwork = det.Config.Images.Base_url + "original" + det.Poster_path
+
+	metadata, err := json.Marshal(f)
+	if err != nil {
+		return "", err
+	}
+	return string(metadata), nil
 }

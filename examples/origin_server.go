@@ -6,10 +6,15 @@ import (
 )
 
 func main() {
-	data, err := metadata.GetMetadata("Marx Brothers - At the Circus (1939).avi","movie")
-	if err != nil {
-		fmt.Println("Error: ",err)
+	Lib,err := metadata.Init(1000000,"metdata.db")
+	if err!=nil {
+	        fmt.Println("Error:",err)
 	} else {
-        	fmt.Println("Data: \n",data)
-	}
+	        data, err := Lib.GetMetadata("MythBusters - 7x14 - Dirty vs. Clean Car","tv")
+	        if err != nil {
+		        fmt.Println("Error:",err)
+	        } else {
+                	fmt.Println(data)
+	        }
+        }
 }

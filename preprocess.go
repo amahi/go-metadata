@@ -13,7 +13,7 @@ import (
 )
 
 //Convert non-standard format strings to standard format
-func preprocess(MediaName string, Hint string) (title string, mediatype string, err error) {
+func (l *Library) preprocess(MediaName string, Hint string) (title string, mediatype string, err error) {
 	//FIXME - add hint assertion
 	if Hint == "movie" {
 		//strip off year name
@@ -35,6 +35,9 @@ func preprocess(MediaName string, Hint string) (title string, mediatype string, 
 			result = parts[0]
 			for _, s := range parts[1 : len(parts)-1] {
 				result += " " + s
+			}
+			if len(parts[len(parts)-1]) > 4 {
+				result += parts[len(parts)-1]
 			}
 		}
 

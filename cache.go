@@ -14,45 +14,46 @@ import (
 )
 
 //FIXME - implement a cache here
-func cache_lookup(MediaName string) (string, error) {
-	db, err := sql.Open("sqlite3", "./metadata.db")
+func (l *Library) cache_lookup(MediaName string) (result string, mediatype string, err error) {
+	db, err := sql.Open("sqlite3", l.dbpath)
 	if err != nil {
-		return "", err
+		return "", "", err
 	}
 	defer db.Close()
 
-	_, err = os.Open("metadata.db")
+	_, err = os.Open(l.dbpath)
 	if err != nil {
-		return "", err
+		return "", "", err
 	}
 
-	rows, err := db.Query("SELECT data FROM metadata WHERE filename=?", MediaName)
+	rows, err := db.Query("SELECT data,type FROM metadata WHERE filename=?", MediaName)
 	if err != nil {
-		return "", err
+		return "", "", err
 	}
 
 	defer rows.Close()
 
 	for rows.Next() {
 		var data string
-		err = rows.Scan(&data)
-		return data, nil
+		var mediatype string
+		err = rows.Scan(&data, &mediatype)
+		return data, mediatype, nil
 	}
 
-	return "", errors.New("No Data found in cache")
+	return "", "", errors.New("No Data found in cache")
 }
 
-func add_to_cache(MediaName string, content string) error {
-	db, err := sql.Open("sqlite3", "./metadata.db")
+func (l *Library) add_to_cache(MediaName string, content string, mediatype string) error {
+	db, err := sql.Open("sqlite3", l.dbpath)
 	if err != nil {
 		return err
 	}
 	defer db.Close()
 
-	_, err = os.Open("metadata.db")
+	_, err = os.Open(l.dbpath)
 	if err != nil {
 		sql := `
-	        create table metadata (filename text not null primary key, data string not null);
+	        create table metadata (filename text not null primary key, data text not null, type text);
 	        `
 		_, err = db.Exec(sql)
 		if err != nil {
@@ -64,13 +65,13 @@ func add_to_cache(MediaName string, content string) error {
 	if err != nil {
 		return err
 	}
-	stmt, err := tx.Prepare("insert into metadata(filename, data) values(?, ?)")
+	stmt, err := tx.Prepare("insert into metadata(filename, data, type) values(?, ?, ?)")
 	if err != nil {
 		return err
 	}
 	defer stmt.Close()
-	_, err = stmt.Exec(MediaName, content)
+	_, err = stmt.Exec(MediaName, content, mediatype)
 	tx.Commit()
-
+	l.current_size++
 	return nil
 }

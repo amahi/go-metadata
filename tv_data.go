@@ -31,7 +31,7 @@ func getTvData(MediaName string) (string, error) {
 }
 
 func getUsableTvName(MediaName string) (string, error) {
-	res, err := http.Get("http://services.tvrage.com/myfeeds/search.php?key=" + TVRAGE_APIKEY + "&show=" + MediaName)
+	res, err := http.Get("http://services.tvrage.com/myfeeds/search.php?key=" + tvrage_apikey + "&show=" + MediaName)
 	if err != nil {
 		return MediaName, err
 	}
@@ -71,7 +71,7 @@ func getSeriesDetails(MediaName string) (tvdbDetails, error) {
 
 func getTvMetadata(Details tvdbDetails) (tvMetadata, error) {
 	var met tvMetadata
-	res, err := http.Get(gettvdbMirrorPath() + "api/" + TVDB_APIKEY + "/series/" + Details.SeriesId + "/all/" + Details.Language + ".xml")
+	res, err := http.Get(gettvdbMirrorPath() + "api/" + tvdb_apikey + "/series/" + Details.SeriesId + "/all/" + Details.Language + ".xml")
 	if err != nil {
 		return met, err
 	}
@@ -86,4 +86,24 @@ func getTvMetadata(Details tvdbDetails) (tvMetadata, error) {
 }
 func gettvdbMirrorPath() string {
 	return "http://thetvdb.com/"
+}
+
+//filter out unwanted movie metadata
+func filterTvData(data string) (string, error) {
+	var f filtered_output
+	var det tvMetadata
+	err := json.Unmarshal([]byte(data), &det)
+	if err != nil {
+		return "", err
+	}
+	f.Media_type = det.Media_type
+	f.Title = det.SeriesName
+	f.Release_date = det.FirstAired
+	f.Artwork = det.Banner_Url + det.Poster
+
+	metadata, err := json.Marshal(f)
+	if err != nil {
+		return "", err
+	}
+	return string(metadata), nil
 }
