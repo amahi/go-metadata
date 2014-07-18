@@ -1,10 +1,17 @@
 Metadata Handler
 ==========
-We are creating a metadata library to be used in a server that helps us retrieve metadata information and artwork about media files. Here is a high level picture of how the library works: 
+We have created a metadata library that helps us retrieve metadata information and artwork about media files.
+![Metadata Flow](docs/img/metadata_flow.jpg)
 
+Here is a high level picture of how the library works:
 ![Metadata Library Architecture](docs/img/metadata_server.jpg)
 
-![Metadata Flow](docs/img/metadata_flow.jpg)
+
+
+Install
+=======
+`go get github.com/amahi/go-metadata`
+
 Details
 =======
 * In our implementation of this library L, the origin server acts as a client to the library
@@ -19,6 +26,7 @@ Details
 Metadata Output
 ============
 ```go
+Lib,err := metadata.Init(1000000,"metdata.db")
 data, err := Lib.GetMetadata("MythBusters - 7x14 - Dirty vs. Clean Car","tv")
 ```
 

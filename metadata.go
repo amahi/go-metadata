@@ -22,15 +22,25 @@ func Init(sz int, dbpath string) (*Library, error) {
 	_, err = os.Open(dbpath)
 	if err != nil {
 		sql := `
-	        create table metadata (filename text not null primary key, data text not null, type text);
+	        create table metadata (filename text not null primary key, data text not null, type text, timestamp integer not null);
 	        `
 		_, err = db.Exec(sql)
 		if err != nil {
 			return &Library{}, err
 		}
 	}
+	rows, err := db.Query("SELECT COUNT(filename) FROM metadata;")
+	if err != nil {
+		return &Library{}, err
+	}
 
-	return &Library{max_size: sz, dbpath: dbpath, current_size: 0}, nil
+	defer rows.Close()
+
+	cs := 0
+	for rows.Next() {
+		err = rows.Scan(&cs)
+	}
+	return &Library{max_size: sz, dbpath: dbpath, current_size: cs}, nil
 
 }
 
