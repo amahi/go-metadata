@@ -26,8 +26,13 @@ Details
 Metadata Output
 ============
 ```go
-Lib,err := metadata.Init(1000000,"metdata.db")
-data, err := Lib.GetMetadata("MythBusters - 7x14 - Dirty vs. Clean Car","tv")
+Lib,err := metadata.Init(1000000,"metadata.db")
+if err == nil {
+        data, err := Lib.GetMetadata("MythBusters - 7x14 - Dirty vs. Clean Car","tv")
+        if err == nil {
+                fmt.Println(data)
+        }
+}
 ```
 
 The above code will return a json string in the following format:-
