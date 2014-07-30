@@ -14,7 +14,10 @@ import (
 
 //Convert non-standard format strings to standard format
 func (l *Library) preprocess(MediaName string, Hint string) (title string, mediatype string, err error) {
-	//FIXME - add hint assertion
+	Hint, err = l.detectTypeFromHint(MediaName, Hint)
+	if err != nil {
+		return MediaName, Hint, errors.New("Media Type Unknown")
+	}
 	if Hint == "movie" {
 		//strip off year name
 		parts := strings.Split(MediaName, "(")
@@ -98,6 +101,6 @@ func (l *Library) preprocess(MediaName string, Hint string) (title string, media
 
 		return result, Hint, nil
 	}
-	//FIXME - add hint detection
+
 	return MediaName, Hint, errors.New("Media Type Unknown")
 }

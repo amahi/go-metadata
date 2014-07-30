@@ -8,6 +8,7 @@ package metadata
 
 import (
 	"database/sql"
+	"errors"
 	_ "github.com/mattn/go-sqlite3"
 	"os"
 )
@@ -60,30 +61,30 @@ func (l *Library) GetMetadata(MediaName string, Hint string) (json string, err e
 	}
 	processed_string, mediatype, err := l.preprocess(MediaName, Hint)
 	if err != nil {
-		return met, err
+		return "{}", err
 	}
 	if mediatype == "tv" {
 		met, err := getTvData(processed_string)
 		if err != nil {
-			return "", err
+			return "{}", err
 		}
 		err = l.add_to_cache(MediaName, met, "tv")
 		met, err = filterTvData(met)
 		if err != nil {
-			return "", err
+			return "{}", err
 		}
 		return met, nil
 	} else if mediatype == "movie" {
 		met, err := getMovieData(processed_string)
 		if err != nil {
-			return "", err
+			return "{}", err
 		}
 		err = l.add_to_cache(MediaName, met, "movie")
 		met, err = filterMovieData(met)
 		if err != nil {
-			return "", err
+			return "{}", err
 		}
 		return met, nil
 	}
-	return met, err
+	return "{}", errors.New("No Results. MediaType should be tv or movie. Metadata library got: " + mediatype)
 }

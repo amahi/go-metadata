@@ -7,3 +7,8 @@
 package metadata
 
 import ()
+
+func (l *Library) detectTypeFromHint(MediaName string, Hint string) (string, error) {
+	//FIXME - add hint detection
+	return Hint, nil
+}

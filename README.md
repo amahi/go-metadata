@@ -28,7 +28,7 @@ Metadata Output
 ```go
 Lib,err := metadata.Init(1000000,"metadata.db")
 if err == nil {
-        data, err := Lib.GetMetadata("MythBusters - 7x14 - Dirty vs. Clean Car","tv")
+        data, err := Lib.GetMetadata("Breaking Bad","tv")
         if err == nil {
                 fmt.Println(data)
         }
@@ -39,9 +39,9 @@ The above code will return a json string in the following format:-
 
 ```json
 {
-   "Media_type":"tv",
-   "Title":"MythBusters",
-   "Artwork":"http://thetvdb.com/banners/posters/73388-2.jpg",
-   "Release_date":"2003-01-23"
+   "media_type":"tv",
+   "title":"Breaking Bad",
+   "artwork":"http://thetvdb.com/banners/posters/81189-22.jpg",
+   "year":"2008"
 }
 ```

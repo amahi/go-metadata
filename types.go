@@ -133,5 +133,5 @@ type filtered_output struct {
 	Media_type   string `json:"media_type"`
 	Title        string `json:"title"`
 	Artwork      string `json:"artwork"`
-	Release_date string `json:"release_date"`
+	Release_date string `json:"year"`
 }

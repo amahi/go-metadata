@@ -99,6 +99,7 @@ func filterTvData(data string) (string, error) {
 	f.Media_type = det.Media_type
 	f.Title = det.SeriesName
 	f.Release_date = det.FirstAired
+	f.Release_date = f.Release_date[0:4]
 	f.Artwork = det.Banner_Url + det.Poster
 
 	metadata, err := json.Marshal(f)
