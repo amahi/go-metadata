@@ -212,7 +212,6 @@ func filterMovieData(data string) (string, error) {
 	if err != nil {
 		return "", err
 	}
-	f.Media_type = det.Media_type
 	f.Title = det.Title
 	f.Release_date = det.Release_date
 	f.Release_date = f.Release_date[0:4]

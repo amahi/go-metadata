@@ -39,7 +39,6 @@ The above code will return a json string in the following format:-
 
 ```json
 {
-   "media_type":"tv",
    "title":"Breaking Bad",
    "artwork":"http://thetvdb.com/banners/posters/81189-22.jpg",
    "year":"2008"

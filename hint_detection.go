@@ -6,9 +6,22 @@
 
 package metadata
 
-import ()
+import (
+	"strings"
+)
 
 func (l *Library) detectTypeFromHint(MediaName string, Hint string) (string, error) {
-	//FIXME - add hint detection
+	tags := strings.Split(Hint, " ")
+	Hint = ""
+	for _, tg := range tags {
+		if strings.Contains(tg, "movie") {
+			Hint = "movie"
+		}
+		if strings.Contains(tg, "tv") {
+			if Hint == "" {
+				Hint = "tv"
+			}
+		}
+	}
 	return Hint, nil
 }
