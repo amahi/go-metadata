@@ -10,6 +10,7 @@ import (
 	"strings"
 )
 
+// a basic hint detection that takes a space seperated list of tags and decided whether media is tv or movie
 func (l *Library) detectTypeFromHint(MediaName string, Hint string) (string, error) {
 	tags := strings.Split(Hint, " ")
 	Hint = ""

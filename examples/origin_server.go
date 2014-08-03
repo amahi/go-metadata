@@ -12,7 +12,8 @@ func main() {
 	if err != nil {
 		fmt.Println("Error:", err)
 	} else {
-		data, err := Lib.GetMetadata("Argo", "tv movie")
+	        
+		data, err := Lib.GetMetadata("Argo", "movie")
 		if err != nil {
 			fmt.Println("Error:", err)
 		} else {

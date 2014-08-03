@@ -14,6 +14,7 @@ import (
 	"time"
 )
 
+//performs cache lookup and return error if data not found in cache
 func (l *Library) cache_lookup(MediaName string) (result string, mediatype string, err error) {
 	db, err := sql.Open("sqlite3", l.dbpath)
 	if err != nil {
@@ -43,6 +44,7 @@ func (l *Library) cache_lookup(MediaName string) (result string, mediatype strin
 	return "", "", errors.New("No Data found in cache")
 }
 
+//adds data to cache
 func (l *Library) add_to_cache(MediaName string, content string, mediatype string) error {
 	if l.current_size > l.max_size {
 		return errors.New("size exceeded")
@@ -89,6 +91,7 @@ func (l *Library) add_to_cache(MediaName string, content string, mediatype strin
 	return nil
 }
 
+// LRU policy implemented here
 func (l *Library) removeDB_LeastRecentlyUsed(db *sql.DB) error {
 
 	rows, err := db.Query("SELECT MIN(timestamp) FROM metadata;")

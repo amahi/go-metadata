@@ -14,6 +14,7 @@ import (
 	"net/http"
 )
 
+//main call to get data for tv shows
 func getTvData(MediaName string) (string, error) {
 	details, err := getSeriesDetails(MediaName)
 	if err != nil {
@@ -30,6 +31,12 @@ func getTvData(MediaName string) (string, error) {
 	return string(data), nil
 }
 
+//This call is used for string correction
+//tvdb is really good at detecting tv/movie titles from non-standard filenames. So we make a call to this function (even for movies)
+//to get a title name in standard format that can then be used to query whichever online database we want without worrying about
+//weird filenames. This however creates a problem if tvdb database doesnot have that movie/tvshow or detects it incorrectly. Tvdb always returns
+//some results even if they are false. So it is hard to debug when tvdb errs. Sometimes when tvdb returns wrong titlename, subsequent api returns data
+//for the wrong titlename
 func getUsableTvName(MediaName string) (string, error) {
 	res, err := http.Get("http://services.tvrage.com/myfeeds/search.php?key=" + tvrage_apikey + "&show=" + MediaName)
 	if err != nil {
@@ -50,6 +57,7 @@ func getUsableTvName(MediaName string) (string, error) {
 	return MediaName, nil
 }
 
+//get tv seriesid from tvdb using show name
 func getSeriesDetails(MediaName string) (tvdbDetails, error) {
 	var det tvdbDetails
 	res, err := http.Get(gettvdbMirrorPath() + "api/GetSeries.php?seriesname=" + MediaName)
@@ -69,6 +77,7 @@ func getSeriesDetails(MediaName string) (tvdbDetails, error) {
 	return det, nil
 }
 
+//get metadata from tvdb using seriesid
 func getTvMetadata(Details tvdbDetails) (tvMetadata, error) {
 	var met tvMetadata
 	res, err := http.Get(gettvdbMirrorPath() + "api/" + tvdb_apikey + "/series/" + Details.SeriesId + "/all/" + Details.Language + ".xml")
@@ -84,11 +93,13 @@ func getTvMetadata(Details tvdbDetails) (tvMetadata, error) {
 	met.Media_type = "tv"
 	return met, nil
 }
+
+//get tvdb mirrorpath - this may need change from time to time
 func gettvdbMirrorPath() string {
 	return "http://thetvdb.com/"
 }
 
-//filter out unwanted movie metadata
+//filter out unwanted tv metadata
 func filterTvData(data string) (string, error) {
 	var f filtered_output
 	var det tvMetadata

@@ -14,6 +14,7 @@ import (
 
 //Convert non-standard format strings to standard format
 func (l *Library) preprocess(MediaName string, Hint string) (title string, mediatype string, err error) {
+	//Send for Hint Detection
 	Hint, err = l.detectTypeFromHint(MediaName, Hint)
 	if err != nil {
 		return MediaName, Hint, errors.New("Media Type Unknown")
@@ -82,6 +83,15 @@ func (l *Library) preprocess(MediaName string, Hint string) (title string, media
 
 		//strip off the full-stops
 		parts = strings.Split(result, ".")
+		if len(parts) > 1 {
+			result = parts[0]
+			for _, s := range parts[1:] {
+				result += "%20" + s
+			}
+		}
+
+		//strip off the underscores
+		parts = strings.Split(result, "_")
 		if len(parts) > 1 {
 			result = parts[0]
 			for _, s := range parts[1:] {

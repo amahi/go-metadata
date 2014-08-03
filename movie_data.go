@@ -16,6 +16,7 @@ import (
 
 var config = TmdbConfig{}
 
+//The main call for getting movie data
 func getMovieData(MediaName string) (string, error) {
 	var met string
 	results, err := searchMovie(MediaName)
@@ -55,7 +56,7 @@ func getMovieData(MediaName string) (string, error) {
 	}
 }
 
-//search for TV, persons and Movies with a given name
+//search on TMDb for TV, persons and Movies with a given name
 func searchTmdbMulti(MediaName string) (TmdbResponse, error) {
 	res, err := http.Get("http://api.themoviedb.org/3/search/multi?api_key=" + tmdb_apikey + "&query=" + MediaName)
 	var resp TmdbResponse
@@ -73,7 +74,7 @@ func searchTmdbMulti(MediaName string) (TmdbResponse, error) {
 	return resp, nil
 }
 
-//search for Movies with a given name
+//search on TMDb for Movies with a given name
 func searchMovie(MediaName string) (TmdbResponse, error) {
 	res, err := http.Get("http://api.themoviedb.org/3/search/movie?api_key=" + tmdb_apikey + "&query=" + MediaName)
 	var resp TmdbResponse
@@ -91,7 +92,7 @@ func searchMovie(MediaName string) (TmdbResponse, error) {
 	return resp, nil
 }
 
-//search for Tv Shows with a given name
+//search on TMDb for Tv Shows with a given name
 func searchTmdbTv(MediaName string) (TmdbResponse, error) {
 	res, err := http.Get("http://api.themoviedb.org/3/search/tv?api_key=" + tmdb_apikey + "&query=" + MediaName)
 	var resp TmdbResponse
@@ -109,7 +110,7 @@ func searchTmdbTv(MediaName string) (TmdbResponse, error) {
 	return resp, nil
 }
 
-//get configurations
+//get configurations from TMDb
 func getConfig() (TmdbConfig, error) {
 	if config.Images.Base_url == "" {
 		res, err := http.Get("http://api.themoviedb.org/3/configuration?api_key=" + tmdb_apikey)
@@ -204,7 +205,7 @@ func getTmdbTvCredits(MediaId string) (TmdbCredits, error) {
 	return cred, nil
 }
 
-//filter out unwanted movie metadata
+//filter out unwanted movie metadata before return to user
 func filterMovieData(data string) (string, error) {
 	var f filtered_output
 	var det MovieMetadata
