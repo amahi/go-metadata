@@ -8,9 +8,9 @@ package metadata
 
 import (
 	"encoding/xml"
+	"github.com/amahi/go-themoviedb"
 )
 
-const tmdb_apikey string = "dc10d9b00f8a4a777539655342cbb647"
 const tvrage_apikey string = "L91ezivwoeU8DymX3Wtc"
 const tvdb_apikey string = "89DA7ABD734DD427"
 
@@ -18,81 +18,7 @@ type Library struct {
 	max_size     int
 	current_size int
 	dbpath       string
-}
-
-//response of search/multi
-type TmdbResponse struct {
-	Page          int
-	Results       []TmdbResult
-	Total_pages   int
-	Total_results int
-}
-
-//results format from Tmdb
-type TmdbResult struct {
-	Adult          bool
-	Name           string
-	Backdrop_path  string
-	Id             int
-	Original_name  string
-	Original_title string
-	First_air_date string
-	Release_date   string
-	Poster_path    string
-	Title          string
-	Media_type     string
-	Profile_path   string
-}
-
-//response of config
-type TmdbConfig struct {
-	Images ImageConfig
-}
-
-//Image configurtion
-type ImageConfig struct {
-	Base_url        string
-	Secure_base_url string
-
-	//possible sizes for images
-	Backdrop_sizes []string
-	Logo_sizes     []string
-	Poster_sizes   []string
-	Profile_sizes  []string
-	Still_sizes    []string
-}
-
-//Movie metadata structure
-type MovieMetadata struct {
-	Id            int
-	Media_type    string
-	Backdrop_path string
-	Poster_path   string
-	Credits       TmdbCredits
-	Config        TmdbConfig
-	Imdb_id       string
-	Overview      string
-	Title         string
-	Release_date  string
-}
-
-type TmdbCredits struct {
-	Id   int
-	Cast []TmdbCast
-	Crew []TmdbCrew
-}
-
-type TmdbCast struct {
-	Character    string
-	Name         string
-	Profile_path string
-}
-
-type TmdbCrew struct {
-	Department   string
-	Name         string
-	Job          string
-	Profile_path string
+	tmdb         *tmdb.TMDB
 }
 
 type tvrageResult struct {

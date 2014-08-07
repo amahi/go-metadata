@@ -2,20 +2,20 @@
 // Use of this source code is governed by the
 // license that can be found in the LICENSE file.
 
-// Functions for requesting Metadata
-
+// Golang library for requesting and caching Movies and TV metadata
 package metadata
 
 import (
 	"database/sql"
 	"errors"
 	_ "github.com/mattn/go-sqlite3"
+	"github.com/amahi/go-themoviedb"
 	"os"
 )
 
 //Initiate the Libray with a valid database path and size.
 //Size must not change on subsequent calls
-func Init(sz int, dbpath string) (*Library, error) {
+func Init(sz int, dbpath, tmdb_api string) (*Library, error) {
 	db, err := sql.Open("sqlite3", dbpath)
 	if err != nil {
 		return &Library{}, err
@@ -43,7 +43,10 @@ func Init(sz int, dbpath string) (*Library, error) {
 	for rows.Next() {
 		err = rows.Scan(&cs)
 	}
-	return &Library{max_size: sz, dbpath: dbpath, current_size: cs}, nil
+
+	tmdb := tmdb.Init(tmdb_api)
+
+	return &Library{max_size: sz, dbpath: dbpath, current_size: cs, tmdb: tmdb}, nil
 
 }
 
@@ -57,7 +60,7 @@ func (l *Library) GetMetadata(MediaName string, Hint string) (json string, err e
 			res, err := filterTvData(met)
 			return res, err
 		} else {
-			res, err := filterMovieData(met)
+			res, err := l.tmdb.ToJSON(met)
 			return res, err
 		}
 
@@ -78,12 +81,12 @@ func (l *Library) GetMetadata(MediaName string, Hint string) (json string, err e
 		}
 		return met, nil
 	} else if mediatype == "movie" {
-		met, err := getMovieData(processed_string)
+		met, err := l.tmdb.MovieData(processed_string)
 		if err != nil {
 			return "{}", err
 		}
 		err = l.add_to_cache(MediaName, met, "movie")
-		met, err = filterMovieData(met)
+		met, err = l.tmdb.ToJSON(met)
 		if err != nil {
 			return "{}", err
 		}

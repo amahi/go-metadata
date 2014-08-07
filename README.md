@@ -1,4 +1,4 @@
-Metadata Handler
+Movie and TV Metadata Library [![Build Status](https://travis-ci.org/amahi/go-metadata.png?branch=master)](https://travis-ci.org/amahi/go-metadata)
 ==========
 We have created a metadata library that helps us retrieve metadata information and artwork about media files.
 ![Metadata Flow](docs/img/metadata_flow.jpg)
