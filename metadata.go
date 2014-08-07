@@ -13,8 +13,8 @@ import (
 	"os"
 )
 
-//Initiate the Libray with a valid database path and size.
-//Size must not change on subsequent calls
+// Initiate the Libray with a valid database path and size.
+// Size must not change on subsequent calls
 func Init(sz int, dbpath, tmdb_api string) (*Library, error) {
 	db, err := sql.Open("sqlite3", dbpath)
 	if err != nil {
@@ -50,8 +50,11 @@ func Init(sz int, dbpath, tmdb_api string) (*Library, error) {
 
 }
 
-//Get metadata for Tv shows and movies from a given medianame and hint as to whether the media is "tv" or "movie"
-//Hint can also be a space seperated list of tags that contain keywords like "tv" and "movie"
+// Get metadata for TV shows and movies from a given medianame (a
+// filename, typically) and hint as to whether the media is "tv" or
+// "movie". The hint can also be a space separated list of tags that
+// contain keywords like "tv" and "movie". First match for tv or movies
+// (for now) wins.
 func (l *Library) GetMetadata(MediaName string, Hint string) (json string, err error) {
 	var met string
 	met, typ, err := l.cache_lookup(MediaName)

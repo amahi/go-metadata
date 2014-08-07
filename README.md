@@ -6,7 +6,7 @@ We have created a metadata library that helps us retrieve metadata information a
 Here is a high level picture of how the library works:
 ![Metadata Library Architecture](docs/img/metadata_server.jpg)
 
-
+And here is the godoc [go-metadata documentation](http://godoc.org/github.com/amahi/go-metadata).
 
 Install
 =======
