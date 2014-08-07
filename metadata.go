@@ -55,9 +55,9 @@ func Init(sz int, dbpath, tmdb_api string) (*Library, error) {
 // "movie". The hint can also be a space separated list of tags that
 // contain keywords like "tv" and "movie". First match for tv or movies
 // (for now) wins.
-func (l *Library) GetMetadata(MediaName string, Hint string) (json string, err error) {
+func (l *Library) GetMetadata(media_name string, Hint string) (json string, err error) {
 	var met string
-	met, typ, err := l.cache_lookup(MediaName)
+	met, typ, err := l.cache_lookup(media_name)
 	if err == nil {
 		if typ == "tv" {
 			res, err := filterTvData(met)
@@ -68,7 +68,7 @@ func (l *Library) GetMetadata(MediaName string, Hint string) (json string, err e
 		}
 
 	}
-	processed_string, mediatype, err := l.preprocess(MediaName, Hint)
+	processed_string, mediatype, err := l.preprocess(media_name, Hint)
 	if err != nil {
 		return "{}", err
 	}
@@ -77,7 +77,7 @@ func (l *Library) GetMetadata(MediaName string, Hint string) (json string, err e
 		if err != nil {
 			return "{}", err
 		}
-		err = l.add_to_cache(MediaName, met, "tv")
+		err = l.add_to_cache(media_name, met, "tv")
 		met, err = filterTvData(met)
 		if err != nil {
 			return "{}", err
@@ -88,7 +88,7 @@ func (l *Library) GetMetadata(MediaName string, Hint string) (json string, err e
 		if err != nil {
 			return "{}", err
 		}
-		err = l.add_to_cache(MediaName, met, "movie")
+		err = l.add_to_cache(media_name, met, "movie")
 		met, err = l.tmdb.ToJSON(met)
 		if err != nil {
 			return "{}", err

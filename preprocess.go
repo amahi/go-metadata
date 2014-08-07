@@ -8,20 +8,19 @@ package metadata
 
 import (
 	"errors"
-	"strconv"
 	"strings"
 )
 
 //Convert non-standard format strings to standard format
-func (l *Library) preprocess(MediaName string, Hint string) (title string, mediatype string, err error) {
-	//Send for Hint Detection
-	Hint, err = l.detectTypeFromHint(MediaName, Hint)
+func (l *Library) preprocess(file_name string, hint string) (title string, mediatype string, err error) {
+	//Send for hint Detection
+	hint, err = l.detectTypeFromHint(file_name, hint)
 	if err != nil {
-		return MediaName, Hint, errors.New("Media Type Unknown")
+		return file_name, hint, errors.New("Media Type Unknown")
 	}
-	if Hint == "movie" {
+	if hint == "movie" {
 		//strip off year name
-		parts := strings.Split(MediaName, "(")
+		parts := strings.Split(file_name, "(")
 		result := parts[0]
 		for _, s := range parts[1:] {
 			yearparts := strings.Split(s, ")")
@@ -45,48 +44,17 @@ func (l *Library) preprocess(MediaName string, Hint string) (title string, media
 			}
 		}
 
-		//replace spaces by %20
-		parts = strings.Split(result, " ")
-		result = parts[0]
-		a, err := strconv.Atoi(parts[0])
-		if err == nil {
-			//remove year
-			if a > 999 && a < 3000 {
-				result = ""
-			}
+		return strings.TrimSpace(result), hint, nil
+	}
 
-		}
+	if hint == "tv" {
+		// strip off the full-stops
+		result := ""
+		parts := strings.Split(file_name, ".")
 		if len(parts) > 1 {
+			result := parts[0]
 			for _, s := range parts[1:] {
-				a, err = strconv.Atoi(s)
-				if err == nil {
-					//remove year
-					if a <= 999 || a >= 3000 {
-						result += "%20" + s
-					}
-				} else {
-					result += "%20" + s
-				}
-			}
-		}
-
-		return result, Hint, nil
-	} else if Hint == "tv" {
-		//replace spaces by %20
-		parts := strings.Split(MediaName, " ")
-		result := parts[0]
-		if len(parts) > 1 {
-			for _, s := range parts[1:] {
-				result += "%20" + s
-			}
-		}
-
-		//strip off the full-stops
-		parts = strings.Split(result, ".")
-		if len(parts) > 1 {
-			result = parts[0]
-			for _, s := range parts[1:] {
-				result += "%20" + s
+				result += " " + s
 			}
 		}
 
@@ -95,22 +63,13 @@ func (l *Library) preprocess(MediaName string, Hint string) (title string, media
 		if len(parts) > 1 {
 			result = parts[0]
 			for _, s := range parts[1:] {
-				result += "%20" + s
+				result += " " + s
 			}
 		}
 		result, _ = getUsableTvName(result)
 
-		//replace spaces by %20
-		parts = strings.Split(result, " ")
-		result = parts[0]
-		if len(parts) > 1 {
-			for _, s := range parts[1:] {
-				result += "%20" + s
-			}
-		}
-
-		return result, Hint, nil
+		return strings.TrimSpace(result), hint, nil
 	}
 
-	return MediaName, Hint, errors.New("Media Type Unknown")
+	return file_name, hint, errors.New("Media hint unknown")
 }
