@@ -18,7 +18,7 @@ type Library struct {
 	max_size     int
 	current_size int
 	dbpath       string
-	tmdb         *tmdb.TMDB
+	tmdb         *tmdb.TMDb
 }
 
 type tvrageResult struct {
