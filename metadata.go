@@ -10,12 +10,13 @@ import (
 	"errors"
 	_ "github.com/mattn/go-sqlite3"
 	"github.com/amahi/go-themoviedb"
+	"github.com/amahi/go-tvrage"
 	"os"
 )
 
 // Initiate the Libray with a valid database path and size.
 // Size must not change on subsequent calls
-func Init(sz int, dbpath, tmdb_api string) (*Library, error) {
+func Init(sz int, dbpath, tmdb_api, tvrage_api, tvdb_api string) (*Library, error) {
 	db, err := sql.Open("sqlite3", dbpath)
 	if err != nil {
 		return &Library{}, err
@@ -45,8 +46,9 @@ func Init(sz int, dbpath, tmdb_api string) (*Library, error) {
 	}
 
 	tmdb := tmdb.Init(tmdb_api)
+	tvrage := tvrage.Init(tvrage_api, tvdb_api)
 
-	return &Library{max_size: sz, dbpath: dbpath, current_size: cs, tmdb: tmdb}, nil
+	return &Library{max_size: sz, dbpath: dbpath, current_size: cs, tmdb: tmdb, tvrage: tvrage}, nil
 
 }
 
@@ -60,7 +62,7 @@ func (l *Library) GetMetadata(media_name string, Hint string) (json string, err 
 	met, typ, err := l.cache_lookup(media_name)
 	if err == nil {
 		if typ == "tv" {
-			res, err := filterTvData(met)
+			res, err := l.tvrage.ToJSON(met)
 			return res, err
 		} else {
 			res, err := l.tmdb.ToJSON(met)
@@ -73,12 +75,12 @@ func (l *Library) GetMetadata(media_name string, Hint string) (json string, err 
 		return "{}", err
 	}
 	if mediatype == "tv" {
-		met, err := getTvData(processed_string)
+		met, err := l.tvrage.TVData(processed_string)
 		if err != nil {
 			return "{}", err
 		}
 		err = l.add_to_cache(media_name, met, "tv")
-		met, err = filterTvData(met)
+		met, err = l.tvrage.ToJSON(met)
 		if err != nil {
 			return "{}", err
 		}

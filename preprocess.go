@@ -66,7 +66,7 @@ func (l *Library) preprocess(file_name string, hint string) (title string, media
 				result += " " + s
 			}
 		}
-		result, _ = getUsableTvName(result)
+		result, _ = l.tvrage.UsableTVName(result)
 
 		return strings.TrimSpace(result), hint, nil
 	}
